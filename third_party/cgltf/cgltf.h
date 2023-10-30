@@ -720,6 +720,11 @@ typedef struct cgltf_material_variant
 	cgltf_extras extras;
 } cgltf_material_variant;
 
+typedef struct cgltf_xmp_json_ld_packet
+{
+    char* data;
+} cgltf_xmp_json_ld_packet;
+
 typedef struct cgltf_asset {
 	char* copyright;
 	char* generator;
@@ -785,6 +790,9 @@ typedef struct cgltf_data
 	cgltf_size variants_count;
 
 	cgltf_extras extras;
+
+    cgltf_size xmp_json_ld_packets_count;
+    cgltf_xmp_json_ld_packet* xmp_json_ld_packets; // just store the packets
 
 	cgltf_size data_extensions_count;
 	cgltf_extension* data_extensions;
@@ -2020,6 +2028,8 @@ void cgltf_free(cgltf_data* data)
 	}
 
 	data->memory.free_func(data->memory.user_data, data->variants);
+
+    data->memory.free_func(data->memory.user_data, data->xmp_json_ld_packets);
 
 	cgltf_free_extensions(data, data->data_extensions, data->data_extensions_count);
 
@@ -5862,6 +5872,42 @@ static int cgltf_parse_json_asset(cgltf_options* options, jsmntok_t const* token
 	return i;
 }
 
+static int cgltf_parse_xmp_json_ld_packet(cgltf_options* options, jsmntok_t const* tokens, int i, const uint8_t* json_chunk, cgltf_xmp_json_ld_packet* packet) {
+    size_t start = tokens[i].start;
+    size_t size = tokens[i].end - start;
+    packet->data = (char*)options->memory.alloc_func(options->memory.user_data, size + 1);
+    if (!packet->data)
+    {
+        return CGLTF_ERROR_NOMEM;
+    }
+    strncpy(packet->data, (const char*)json_chunk + start, size);
+    packet->data[size] = '\0';
+
+    i = cgltf_skip_json(tokens, i);
+    return i;
+}
+
+static int cgltf_parse_xmp_json_ld_packets(cgltf_options* options, jsmntok_t const* tokens, int i, const uint8_t* json_chunk, cgltf_data* out_data) {
+
+    i = cgltf_parse_json_array(options, tokens, i, json_chunk, sizeof(cgltf_material_variant),
+                               (void**)&out_data->xmp_json_ld_packets, &out_data->xmp_json_ld_packets_count);
+
+    if (i < 0)
+    {
+        return i;
+    }
+
+    for (cgltf_size j = 0; j < out_data->xmp_json_ld_packets_count; ++j)
+    {
+        i = cgltf_parse_xmp_json_ld_packet(options, tokens, i, json_chunk, &out_data->xmp_json_ld_packets[j]);
+        if (i < 0)
+        {
+            return i;
+        }
+    }
+    return i;
+}
+
 cgltf_size cgltf_num_components(cgltf_type type) {
 	switch (type)
 	{
@@ -6076,6 +6122,29 @@ static int cgltf_parse_json_root(cgltf_options* options, jsmntok_t const* tokens
 						}
 					}
 				}
+                else if (cgltf_json_strcmp(tokens+i, json_chunk, "KHR_xmp_json_ld") == 0)
+                {
+                    ++i;
+
+                    CGLTF_CHECK_TOKTYPE(tokens[i], JSMN_OBJECT);
+
+                    int data_size = tokens[i].size;
+                    ++i;
+
+                    for (int m = 0; m < data_size; ++m) {
+                        CGLTF_CHECK_KEY(tokens[i]);
+
+                        if (cgltf_json_strcmp(tokens + i, json_chunk, "packets") == 0) {
+                            i = cgltf_parse_xmp_json_ld_packets(options, tokens, i + 1, json_chunk, out_data);
+                        } else {
+                            i = cgltf_skip_json(tokens, i + 1);
+                        }
+
+                        if (i < 0) {
+                            return i;
+                        }
+                    }
+                }
 				else
 				{
 					i = cgltf_parse_json_unprocessed_extension(options, tokens, i, json_chunk, &(out_data->data_extensions[out_data->data_extensions_count++]));
