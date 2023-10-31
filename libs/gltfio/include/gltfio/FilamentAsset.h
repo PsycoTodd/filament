@@ -206,7 +206,10 @@ public:
     /** Gets the glTF extras string for a specific node, or for the asset, if it exists. */
     const char* getExtras(Entity entity = {}) const noexcept;
 
-    /**
+    /** Gets the gltf KHR_xmp_json_ld data for a specific node, or for the asset, if it exists */
+    std::vector<std::string> getKHRXmpJsonLd(Entity entity = {}) const noexcept;
+
+    /**f
      * Gets the morph target name at the given index in the given entity.
      */
     const char* getMorphTargetNameAt(Entity entity, size_t targetIndex) const noexcept;

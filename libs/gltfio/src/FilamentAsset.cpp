@@ -102,6 +102,23 @@ const char* FFilamentAsset::getExtras(utils::Entity entity) const noexcept {
     return mNodeManager->getExtras(mNodeManager->getInstance(entity)).c_str();
 }
 
+std::vector<std::string> FFilamentAsset::getKHRXmpJsonLd(Entity entity = {}) const noexcept {
+    std::vector<std::string> ret;
+    if (mSourceAsset &&
+        mSourceAsset->hierarchy &&
+        mSourceAsset->hierarchy->xmp_json_ld_packets &&
+        entity.isNull()) {
+        const auto& packets = mSourceAsset->hierarchy->xmp_json_ld_packets;
+        const auto& indices = mSourceAsset->hierarchy->asset.xmp_json_ld;
+        const auto& count = mSourceAsset->hierarchy->asset.xmp_json_ld_count;
+        for (size_t i = 0; i < count; ++i) {
+            ret.emplace_back(packets[indices[i].pos].data);
+        }
+        return ret;
+    }
+    return ret; //TODO
+}
+
 void FFilamentAsset::addTextureBinding(MaterialInstance* materialInstance,
         const char* parameterName, const cgltf_texture* srcTexture,
         TextureProvider::TextureFlags flags) {
@@ -363,6 +380,10 @@ size_t FilamentAsset::getEntitiesByPrefix(const char* prefix, Entity* entities,
 
 const char* FilamentAsset::getExtras(Entity entity) const noexcept {
     return downcast(this)->getExtras(entity);
+}
+
+std::vector<std::string> FilamentAsset::getKHRXmpJsonLd(Entity entity) const noexcept {
+    return downcast(this)->getKHRXmpJsonLd(entity);
 }
 
 const char* FilamentAsset::getMorphTargetNameAt(utils::Entity entity,

@@ -178,6 +178,8 @@ struct FFilamentAsset : public FilamentAsset {
 
     const char* getExtras(utils::Entity entity) const noexcept;
 
+    std::vector<std::string> getKHRXmpJsonLd(utils::Entity entity) const noexcept;
+
     utils::Entity getFirstEntityByName(const char* name) noexcept;
 
     size_t getEntitiesByName(const char* name, utils::Entity* entities,
