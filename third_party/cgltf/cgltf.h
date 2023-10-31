@@ -384,8 +384,9 @@ typedef struct cgltf_image
 	char* uri;
 	cgltf_buffer_view* buffer_view;
 	char* mime_type;
-    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_extras extras;
+    cgltf_size xmp_json_ld_count;
+    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
 } cgltf_image;
@@ -548,8 +549,9 @@ typedef struct cgltf_material
 	cgltf_float alpha_cutoff;
 	cgltf_bool double_sided;
 	cgltf_bool unlit;
-    cgltf_xmp_json_ld* xmp_json_ld;
 	cgltf_extras extras;
+    cgltf_size xmp_json_ld_count;
+    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
 } cgltf_material;
@@ -603,8 +605,9 @@ typedef struct cgltf_mesh {
 	cgltf_size weights_count;
 	char** target_names;
 	cgltf_size target_names_count;
-    cgltf_xmp_json_ld* xmp_json_ld;
 	cgltf_extras extras;
+    cgltf_size xmp_json_ld_count;
+    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
 } cgltf_mesh;
@@ -685,6 +688,7 @@ struct cgltf_node {
 	cgltf_extras extras;
 	cgltf_bool has_mesh_gpu_instancing;
 	cgltf_mesh_gpu_instancing mesh_gpu_instancing;
+    cgltf_size xmp_json_ld_count;
     cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
@@ -695,6 +699,8 @@ typedef struct cgltf_scene {
 	cgltf_node** nodes;
 	cgltf_size nodes_count;
 	cgltf_extras extras;
+    cgltf_size xmp_json_ld_count;
+    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
 } cgltf_scene;
@@ -723,8 +729,9 @@ typedef struct cgltf_animation {
 	cgltf_size samplers_count;
 	cgltf_animation_channel* channels;
 	cgltf_size channels_count;
-    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_extras extras;
+    cgltf_size xmp_json_ld_count;
+    cgltf_xmp_json_ld *xmp_json_ld;
 	cgltf_size extensions_count;
 	cgltf_extension* extensions;
 } cgltf_animation;
