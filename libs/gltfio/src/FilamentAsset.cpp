@@ -104,11 +104,16 @@ const char* FFilamentAsset::getExtras(utils::Entity entity) const noexcept {
 
 std::vector<std::string> FFilamentAsset::getKHRXmpJsonLd(Entity entity = {}) const noexcept {
     std::vector<std::string> ret;
+    const cgltf_xmp_json_ld_packet* packets = nullptr;
     if (mSourceAsset &&
         mSourceAsset->hierarchy &&
-        mSourceAsset->hierarchy->xmp_json_ld_packets &&
-        entity.isNull()) {
-        const auto& packets = mSourceAsset->hierarchy->xmp_json_ld_packets;
+        mSourceAsset->hierarchy->xmp_json_ld_packets) {
+        packets = mSourceAsset->hierarchy->xmp_json_ld_packets;
+    }
+    else {
+        return ret;
+    }
+    if (entity.isNull()) {
         const auto& indices = mSourceAsset->hierarchy->asset.xmp_json_ld;
         const auto& count = mSourceAsset->hierarchy->asset.xmp_json_ld_count;
         for (size_t i = 0; i < count; ++i) {
@@ -116,7 +121,12 @@ std::vector<std::string> FFilamentAsset::getKHRXmpJsonLd(Entity entity = {}) con
         }
         return ret;
     }
-    return ret; //TODO
+
+    const auto& indices =  mNodeManager->getKHRXMPJsonLd(mNodeManager->getInstance(entity));
+    for (const auto& id : indices) {
+        ret.emplace_back(packets[id].data);
+    }
+    return ret;
 }
 
 void FFilamentAsset::addTextureBinding(MaterialInstance* materialInstance,

@@ -72,6 +72,14 @@ const CString& NodeManager::getExtras(Instance ci) const noexcept {
     return downcast(this)->getExtras(ci);
 }
 
+void NodeManager::setKHRXMPJsonLd(Instance ci, FixedCapacityVector<size_t> json_ld_id) noexcept {
+    downcast(this)->setKHRXMPJsonLd(ci, std::move(json_ld_id));
+}
+
+const FixedCapacityVector<size_t> & NodeManager::getKHRXMPJsonLd(Instance ci) const noexcept {
+    return downcast(this)->getKHRXMPJsonLd(ci);
+}
+
 void NodeManager::setSceneMembership(Instance ci, SceneMask scenes) noexcept {
     downcast(this)->setSceneMembership(ci, scenes);
 }

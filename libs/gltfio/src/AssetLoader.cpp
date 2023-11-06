@@ -575,6 +575,18 @@ void FAssetLoader::recurseEntities(const cgltf_node* node, SceneMask scenes, Ent
                 {srcAsset->json + node->extras.start_offset, extras_size});
     }
 
+    // Check if this node has KHR_xmp_json_ld data.
+    const cgltf_size xmp_json_ld_size = node->xmp_json_ld_count;
+    if (xmp_json_ld_size > 0) {
+        FixedCapacityVector<size_t> xmp_json_ld_indices(xmp_json_ld_size);
+        for (cgltf_size i = 0; i < xmp_json_ld_size; ++i) {
+            xmp_json_ld_indices[i] = node->xmp_json_ld[i].pos;
+        }
+
+        mNodeManager.setKHRXMPJsonLd(mNodeManager.getInstance(entity),
+                                     std::move(xmp_json_ld_indices));
+    }
+
     // Update the asset's entity list and private node mapping.
     fAsset->mEntities.push_back(entity);
     instance->mEntities.push_back(entity);
