@@ -85,12 +85,12 @@ public:
         return mManager[ci].extras;
     }
 
-    void setKHRXMPJsonLd(Instance ci, utils::FixedCapacityVector<size_t> json_ld_id) noexcept {
-        mManager[ci].xmp_json_ld_id = std::move(json_ld_id);
+    void setKHRXMPJsonLd(Instance ci, CString json_ld) noexcept {
+        mManager[ci].xmp_json_ld = std::move(json_ld);
     }
 
-    const utils::FixedCapacityVector<size_t>& getKHRXMPJsonLd(Instance ci) const noexcept {
-        return mManager[ci].xmp_json_ld_id;
+    const CString& getKHRXMPJsonLd(Instance ci) const noexcept {
+        return mManager[ci].xmp_json_ld;
     }
 
     void setSceneMembership(Instance ci, SceneMask scenes) noexcept {
@@ -106,14 +106,14 @@ private:
         MORPH_TARGET_NAMES,
         EXTRAS_STRING,
         SCENE_MEMBERSHIP,
-        XMP_JSON_LD_ID
+        XMP_JSON_LD
     };
 
-    using Base = utils::SingleInstanceComponentManager<  // 44 bytes
+    using Base = utils::SingleInstanceComponentManager<  // 36 bytes
             utils::FixedCapacityVector<CString>,  // 16
             CString,                              // 8
             SceneMask,                            // 4
-            utils::FixedCapacityVector<size_t>>; // 16
+            CString>;                             // 8
 
     struct Sim : public Base {
         using Base::gc;
@@ -128,7 +128,7 @@ private:
 
             union {
                 Field<MORPH_TARGET_NAMES>   morphTargetNames;
-                Field<XMP_JSON_LD_ID>       xmp_json_ld_id;
+                Field<XMP_JSON_LD>       xmp_json_ld;
                 Field<EXTRAS_STRING>        extras;
                 Field<SCENE_MEMBERSHIP>     scenes;
             };

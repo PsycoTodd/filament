@@ -72,11 +72,11 @@ const CString& NodeManager::getExtras(Instance ci) const noexcept {
     return downcast(this)->getExtras(ci);
 }
 
-void NodeManager::setKHRXMPJsonLd(Instance ci, FixedCapacityVector<size_t> json_ld_id) noexcept {
-    downcast(this)->setKHRXMPJsonLd(ci, std::move(json_ld_id));
+void NodeManager::setKHRXMPJsonLd(Instance ci, CString json_ld) noexcept {
+    downcast(this)->setKHRXMPJsonLd(ci, std::move(json_ld));
 }
 
-const FixedCapacityVector<size_t> & NodeManager::getKHRXMPJsonLd(Instance ci) const noexcept {
+const CString& NodeManager::getKHRXMPJsonLd(Instance ci) const noexcept {
     return downcast(this)->getKHRXMPJsonLd(ci);
 }
 

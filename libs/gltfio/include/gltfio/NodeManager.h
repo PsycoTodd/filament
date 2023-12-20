@@ -90,8 +90,8 @@ public:
     void setExtras(Instance ci, CString extras) noexcept;
     const CString& getExtras(Instance ci) const noexcept;
 
-    void setKHRXMPJsonLd(Instance ci, utils::FixedCapacityVector<size_t> json_ld) noexcept;
-    const utils::FixedCapacityVector<size_t> & getKHRXMPJsonLd(Instance ci) const noexcept;
+    void setKHRXMPJsonLd(Instance ci, CString json_ld) noexcept;
+    const CString& getKHRXMPJsonLd(Instance ci) const noexcept;
 
     void setSceneMembership(Instance ci, SceneMask scenes) noexcept;
     SceneMask getSceneMembership(Instance ci) const noexcept;
